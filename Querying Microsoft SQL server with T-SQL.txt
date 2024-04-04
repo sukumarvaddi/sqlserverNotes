@@ -1,0 +1,278 @@
+
+
+Section 1
+*************
+1. Ability to analyze and apply data is the key to unlocking business potential.
+2. Covers
+	1. Download SQL server for free.
+	2. Create Tables with appropriate Data type.
+	3. Retrieve data using Select queries with its six principle components: select, from, where, group by, having and order by. 
+	4. Join and union tables together.
+	5. Insert, update and delete data.
+	6. Add constraints to tables
+	7. Store our queries in views and procedures and expand them using functions such as row number, like and User defined functions.
+	8. Add subqueries and use the 'with' statement
+	9. XML, JSON, temporal tables, transactions, dynamic management views and much more
+
+Section 2
+**********************
+
+SSAS: SQL server analytics service
+SSIS: SQL server integration service
+SSRS: SQL server Reporting service
+SSMS: SQL Server management Studio
+
+Open SQL Server: Open SSMS and connect
+
+Create a Databse: 
+	Database is a container for tables, queries, functions, views etc. It also hold security to ensure that people who do not have access to the databse cannot get in. 
+	
+	To create a database, connect to SQL server in SSMS , right click on "Databases" and click "New Database" in the menu. Give your database a name in the Dialog and click OK button at the bottom.
+	
+Create our First Queries:
+	Every query is run in the context of a database. 
+	e.g. SELECT 1+1 AS RESULT.
+	
+	Semicolons at the end of query are optional.
+	
+	If you run the following sql, the statements are executed as batch.  More on batch latter. Basically a batch is something that is executes all at once. Batches are not important for select statements. They are important for other ones which we will look latter. 
+	SELECT 1+1 AS RESULT
+	SELECT 1*1 AS RESULT
+	
+	If you interpse the above two queries with "GO" in the example belwo, "GO" signifies the end of batch.
+	SELECT 1+1 AS RESULT
+	GO  --end of batch 
+	SELECT 1*1 AS RESULT
+	
+Section 3
+**********************
+Creating a table:
+	CREATE TABLE tblSecond 	
+	(myNumbers int)
+
+Entering data into the table using T_SQL:
+	INSERT INTO tblSecond values(234)
+		
+
+Retrieving data:
+	SELECT * from tblSecond
+	
+Deleting data:
+	DELETE tblSecond
+	DELETE FROM tblSecond
+	TRUNCATE TABLE tblSecond
+
+Dropping Table:
+	DROP TABLE tblSecond
+	
+Section 4
+**********************
+	USE [70-461] -- directs to use database "70-461"
+	GO --Breaks the batch
+	Creating an Employee table
+		CREATE TABLE tblEmployee (EmployeeNumber int, EmployeeName int)
+	
+	DataTypes for  	
+		1. strings 
+		2. whole numbers
+		3. Floating point numbers
+		4. dates
+
+Declare temporary variables:
+	DECLARE @myVar as int = 3
+		or
+	DECLARE @myVar as int
+	SET @myVar = 2
+	
+	After setting @myVar to 2, you can run the following statement and update @myVar
+	SET @myVar = @myVar+3  --Update @myVar by adding 3 to 2
+
+	You can run the following SQL after the above declaration
+	select @myVar as result --Returns 5 as 2+3 = 5
+	
+Integer Numbers:
+	
+	There are four types of integers:
+		1. bigInt  -2^63 to ((2^63)-1) 	8 bytes
+		2. int     -2^31 to ((2^31)-1) 	4 bytes
+		3. smalint -2^15 to ((2^15)-1) 	2 bytes
+		4. tinyint (0-255) 			 	1 byte
+		
+Non Integer Numbers:
+	DECLARE @myVar as decimal(7,2) --Total of 7 digits. 2 digits after the deciaml point
+	-- 12345.67 is valid
+	-- 123456.7 is not valid
+
+	decimal and numeric are synonyms and can be used interchangeably.
+	The second argument  is not mandatory. If second argument is not provided, the number is rounded up or rounded down to the nearest number.
+	The default is 18 digits
+	
+	money and smallmoney datatypes: https://learn.microsoft.com/en-us/sql/t-sql/data-types/money-and-smallmoney-transact-sql?view=sql-server-ver16
+	
+	float and real: Approximate-number data types for use with floating point numeric data.
+	More Information on float and real: https://learn.microsoft.com/en-us/sql/t-sql/data-types/float-and-real-transact-sql?view=sql-server-ver16
+	
+Mathematical functions:
+	POWER(base, exponent)
+	SQUARE(number)
+	SQRT(number)
+	FLOOR(number) Rounds down to a nearest whole number
+	CEILING(number) Rounds up to a nearest whole number
+	ROUND(number[, precison]) Round goes either up or down to a nearest whole number. Do not expect it to work as you always would
+	Round(number, -1). Rounds up to the nearest ten
+	PI()
+	EXP(1) exponent equal to mathematical `e`
+	ABS(number) 
+	SIGN(number) returns either positive or negative sign
+	RAND(number) Returns a random number
+	
+Converting between number types:
+	--implicit:
+		Declare @myvar as numeric(7,2) = 3
+		SELECT @myvar
+		
+	--explicit:
+		select CONVERT(decimal(5,2), 3) becomes 3.00
+		select CAST(3 as decimal(5,2))
+		
+	There are explicit TRY_CONVERT and TRY_CAST which returns null and not throw an exception 
+	
+Section 5
+******************************************
+Strings:
+	1. char -- Works on ASCII Range. Also takes fixed number of bytes though the number of characters are less than the declared bytes. Use it only if you know how long the string is going to be
+	2. varchar -- Works on ASCII Range : Takes actual length of the data plus 2 bytes. Use this if you are not sure how long the string is going to be. 
+	For ASCII range, the amount of bytes needed for each character is just 1 byte
+	3. nchar -- Unicode
+	4. nvarchar -- Unicode
+	FOR Unicode we need two bytes per character.
+	
+	You an use len(@chracterString) : Gives the length of the characters.
+	
+	DECLARE @characterString as char(10)
+	set @characterString = "hello"
+	
+	select len(@characterString) --Returns 5
+    select DATALENGTH(@characterString) --Returns 10 
+	
+	e.g.
+	DECLARE @myNchar as nchar(10)
+	SET @myNchar = N'hello欗'
+	select @myNchar as CharacterData, DATALENGTH(@myNchar) as [DATALENGTH]
+
+String functions:
+	1. LEFT(@myNChar, 2): Returns first two characters.
+	2. RIGHT(@myNChar, 2): Returns Last two caracters.
+	3. SUBSTRING(@myNChar, 3, 2)
+	4. LTRIM(@myNChar): Left trim
+	5. RTRIM(@myNChar): Right trim
+	6. TRIM(@myNChar): Trims on both ends of the string.
+
+NULL - an introduction
+	DECLARE @myVar as int
+	SELECT @myVar as myCol --Returns NULL
+	
+	Mathemtical opertations on  NULL returns NULL.
+	
+
+Joining two strings together
+	1. use '+' to join strings together.
+	2. iif: Returns 'YES'  if the condition is true, or 'NO' if the condition is false
+		SELECT IIF(500<1000, 'YES', 'NO');
+		SELECT @firstname + IFF(@middleName is NULL, '', ' '+@middleName)+ ' '+@lastName as FullName
+	3. CASE: 
+		CASE
+			WHEN condition1 THEN result1
+			WHEN condition2 THEN result2
+			WHEN conditionN THEN resultN
+			ELSE result
+		END;	
+	e.g.
+		SELECT OrderID, Quantity,
+			CASE
+				WHEN Quantity > 30 THEN 'The quantity is greater than 30'
+				WHEN Quantity = 30 THEN 'The quantity is 30'
+				ELSE 'The quantity is under 30'
+			END AS QuantityText
+		FROM OrderDetails;
+	
+	4. COALESCE
+		SELECT @firstName  +COALESCE(' '+@middleName,'')+ ' '+@lastName as FullName  -- If there is middleName take middleName else take ''
+
+	5. CONCAT
+		SELECT CONCAT(@firstName, ' '+@middlename, ' ' +@lastName) as FullName  -- Disregards the null
+	
+Joining a string to a number
+	1. The rules of data precedence specify that the data type with the lower precedence is converted to a data type with the higher precedence. Strings have lowest data type precedence.
+	 so adding a string and int results in error as string cannot be converted into int which has higher precedence over string.
+	 
+	2. But we can explicity convert: e.g. SELECT 'My Number is ' + convert(nvarchar(10), 12345) as myString
+
+	FORMAT: SELECT 'My Salary is: '+FORMAT(2345.6, 'C') -- Returns 'My Salary is 2345.60'. C stands for currency which is formatted to two decimal places. 
+	The FORMAT takes a third parameter which specifies the culture/locale. e.g. SELECT 'My Salary is: '+FORMAT(2345.6, 'C', 'en-GB')
+	For more information check https://learn.microsoft.com/en-us/sql/t-sql/functions/format-transact-sql?view=sql-server-ver16
+	
+	Some More String functionalities:
+		SELECT CHAR(65) --Returns 'A'
+		SELECT CHAR(97) --Returns 'a'
+		SELECT 'HELLO.'+CHAR(65) --Return 'HELLO.A'
+		CHAR(9) --ASCII for tab
+		CHAR(10) -- ASCII for Line feed
+		CHAR(13) -- ASCII for carriage returns
+		
+		SELECT ASCII('A') --Returns 65
+		SELECT NCHAR(257) --Returns ā
+		SELECT UNICODE(N'ā') --Returns 257
+		
+	Searching for text in SQL Server
+		SELECT CHARINDEX('ll', 'Hello there') -->Returns 3 (indices are 1 based)
+		SELECT CHARINDEX('e', 'Hello there', 3) --> Starts searching for 'e' from index 3: Returns 9 (indices are 1 based)
+		If you search for a sub-string that is not there, the result is 0
+		The above SELECT statements are case insensitive.
+		
+		SELECT CHARINDEX('ll', 'Hello there', Latin1_General_CI_AI) : This is case and ascent insensitive search
+		SELECT CHARINDEX('ll', 'Hello there', Latin1_General_CS_AS) : This is case sensitive and ascent sensitive search
+		
+		SELECT * FROM sys.objects WHERE [name] like '%row%' --> Returns all rows whose name has 'row' anywhere in the name value string.
+				%: 0 to n number of characters
+				_: 1 character exactly.
+		SELECT PATINDEX('%e', 'Hello there') --PATINDEX means pattern index.		
+	
+		
+	
+
+Section 6 Date Data types and functions
+**************************************************
+	1. datetime --Most used data type. format: YYYY-MM-DD hh:mm:ss[.nnn] 
+	2. date --format:YYYY-MM-DD 
+	3. time --format: hh:mm:ss[.nnnnnnn]
+	4. smalldatetime --format: YYYY-MM-DD hh:mm:ss
+	5. datetime2 --format: YYYY-MM-DD hh:mm:ss[.nnnnnnn]
+	
+	Setting dates and Date extraction:
+		DECLARE  @mydate AS DATETIME = '2015-06-24 12:34:56.124'
+		SELECT @mydate as  Mydate --Returns 2015-06-24 12:34:56.123 beacuse date times have an accuracy of 0.00333 second. So it means the third decimal place can be a 3, 7 or 0
+		
+		DECLARE  @mydate AS DATETIME2(4) = '2015-06-24 12:34:56.124' --Accurate to 4 decimal places.
+		SELECT @mydate as  Mydate --Returns 2015-06-24 12:34:56.1240.
+	
+		SELECT DATEFROMPARTS(2015,06,24) AS ThisDate
+		SELECT DATETIME2FROMPARTS(2015,06,24,12,34,56,124,3) AS ThisDate
+		SELECT YEAR(@myDate)AS myYear, MONTH(@myDate) AS myMOnth, DAY(@mydate) AS myDay
+		
+	Today's date, and more date funtions:
+	
+		SELECT CURRENT_TIMESTAMP AS RightNow --Returns 2024-04-03 07:47:23.637
+		SELECT GETDATE() AS RightNow --Returns 2024-04-03 07:47:23.637
+		SELECT SYSDATETIME() AS RightNow --Returns 2024-04-03 07:47:23.6389619
+		SELECT dateadd(YEAR, 1, '2015-01-02 03:04:05') AS myYear --Adds 1 year to the provided date
+		SELECT DATEPART(hour, '2015-01-02 03:04:05') AS myAnswer -- Extracts hour part of the provided date. Returns 3
+		SELECT DATENAME(WEEKDAY, getDate()) AS weekday --Returns 'wednesday' if you run this query on wednesday.
+		SELECT DATEDIFF(YEAR,'1980-01-01', getdate()) AS SecondsElapsed --Returns numbe of Years from Jan 1 1980 to today
+		
+	D
+		
+		 
+		
+	
+		
