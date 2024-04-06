@@ -310,6 +310,17 @@ Section 6 Date Data types and functions
 				select PARSE('Jueves, 25 de junio de 2015' as date using 'es-US') as myParsedDateInSpanish -- returns 2015-06-25
 		
 		 
+		For adding days or substracting days watch https://www.youtube.com/watch?v=J66l4V1Cwh4
+		What is the difference between two dates: Hint use DATEDIFF  watch https://www.youtube.com/watch?v=J66l4V1Cwh4
+		Convert numbers year, month and days and more to dates in SQL Server - with ...FROMPARTS functions: watch https://www.youtube.com/watch?v=bBvPi0Id3fw
+		Extract parts of dates - using DATENAME, DATEPART, DAY, MONTH and YEAR functions in SQL Server: Watch https://www.youtube.com/watch?v=oWiPp09V6ok
+		The FORMAT function in SQL Server - extracting single or multiple parts of a datetime: Watch https://www.youtube.com/watch?v=fIfJAopDjeQ
+		Getting the First day and last day of a month in SQL Server: https://www.youtube.com/watch?v=60HcxUQka1Q
+		Getting the current date and time in SQL Server, and using timezones with DateTimeOffset: https://www.youtube.com/watch?v=VMxd03O2U4E
+		
+
+
+		
 		
 	
 		
