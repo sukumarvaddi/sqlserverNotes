@@ -285,8 +285,29 @@ Section 6 Date Data types and functions
 		
 		SELECT SYSUTCDATETIME() as timeNowUTC  --> Returns time in GMT upto 7 decimal points precision in seconds
 		
+	Converting from date to strings and viceversa:
+		1. CONVERT
+			DECLARE  @mydate AS DATETIME = '2015-06-24 12:34:56.124'
+			select CONVERT(nvarchar(20), @mydate) as myConvertedDate -- Returns Jun 24 2015 12:34PM
+			you can also use code for culture as third argument
+			select CONVERT(nvarchar(20), @mydate, 101) as myConvertedDate --Returns 06/24/2015
+			
+		2. CAST
+			DECLARE  @mydate AS DATETIME = '2015-06-24 12:34:56.124'
+			select cast(@mydate as  nvarchar(20)) as myConvertedDate -- Returns Jun 24 2015 12:34PM
+			
+		3. FORMAT: This function gives lot more flexibility. For more information https://learn.microsoft.com/en-us/sql/t-sql/functions/format-transact-sql?view=sql-server-ver16
+			SELECT FORMAT(CAST('2015-0-25 01:02:03.456' as datetime), 'D') as MyFormattedLongDate   -- Returns Thursday, June 25, 2015
+			SELECT FORMAT(CAST('2015-0-25 01:02:03.456' as datetime), 'd') as MyFormattedShortDate  -- Returns 6/25/2015
+			SELECT FORMAT(CAST('2015-0-25 01:02:03.456' as datetime), 'dd-MM-yyyy') as MyFormattedBritishDate --Returns 25-06-2015
+			SELECT FORMAT(CAST('2015-0-25 01:02:03.456' as datetime), 'D', 'es-ES') as MyFormattedInternationalLongDate -- Returns jueves, 25 de junio de 2015
 		
-		
+		From string to date:
+			1. PARSE
+				select PARSE('Thursday, 25 June 2015' as date) as myParsedDate -- returns 2015-06-25
+				
+				An example using culture:
+				select PARSE('Jueves, 25 de junio de 2015' as date using 'es-US') as myParsedDateInSpanish -- returns 2015-06-25
 		
 		 
 		
