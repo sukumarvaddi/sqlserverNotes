@@ -257,7 +257,7 @@ Section 6 Date Data types and functions
 		SELECT @mydate as  Mydate --Returns 2015-06-24 12:34:56.1240.
 	
 		SELECT DATEFROMPARTS(2015,06,24) AS ThisDate
-		SELECT DATETIME2FROMPARTS(2015,06,24,12,34,56,124,3) AS ThisDate
+		SELECT DATETIME2FROMPARTS(2015,06,24,12,34,56,124,3) AS ThisDate --Returns 2015-06-24 12:34:56.124. For more information checkout https://learn.microsoft.com/en-us/sql/t-sql/functions/datetime2fromparts-transact-sql?view=sql-server-ver16
 		SELECT YEAR(@myDate)AS myYear, MONTH(@myDate) AS myMOnth, DAY(@mydate) AS myDay
 		
 	Today's date, and more date funtions:
@@ -270,7 +270,23 @@ Section 6 Date Data types and functions
 		SELECT DATENAME(WEEKDAY, getDate()) AS weekday --Returns 'wednesday' if you run this query on wednesday.
 		SELECT DATEDIFF(YEAR,'1980-01-01', getdate()) AS SecondsElapsed --Returns numbe of Years from Jan 1 1980 to today
 		
-	D
+	datetimeoffset: 
+		stores date and time with offset:the offset being number of hours ahead or behind GMT.
+		e.g. DECLARE @mydateoffset as dattimeoffset = '2015-06-25 01:02:03.456 +05:30'
+		
+		You can also take datetime2 datatype value and pass it as an argument to TODATETIMEOFFSET() to include offset information in the value.TODATETIMEOFFSET takes two arguments. The first one in the data and time info and second argument is number of hours ahead or behind GMT.
+		eg. delcare @mydate as datetime2 = '2015-06-25 01:02:03.456'
+			select TODATETIMEOFFSET(@mydate, '+5:30') as MyDateOffset
+		TODATETIMEOFFSET should not be used to converting timezones. It is only used for adding a time zone to an existing date and time information. If you want to change the time zone, use SWITCHOFFSET() which takes datetimeoffset and new time zone and returns a datetimeoffset. More information @ https://learn.microsoft.com/en-us/sql/t-sql/functions/switchoffset-transact-sql?view=sql-server-ver16
+		
+		SELECT DATETIMEOFFSETFROMPARTS ( 2010, 12, 31, 14, 23, 23, 0, 12, 0, 7 ) AS Result;  --Returns 2010-12-31 14:23:23.0000000 +12:00. Refer https://learn.microsoft.com/en-us/sql/t-sql/functions/datetimeoffsetfromparts-transact-sql?view=sql-server-ver16 for more information.  
+		
+		SELECT SYSDATETIMEOFFSET() as TimeNowWithOffset --> Returns a datetimeoffset(7) value that contains the date and time of the computer on which the instance of SQL Server is running. The time zone offset is included. More information @ https://learn.microsoft.com/en-us/sql/t-sql/functions/sysdatetimeoffset-transact-sql?view=sql-server-ver16
+		
+		SELECT SYSUTCDATETIME() as timeNowUTC  --> Returns time in GMT upto 7 decimal points precision in seconds
+		
+		
+		
 		
 		 
 		
